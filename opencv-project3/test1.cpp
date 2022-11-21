@@ -6,7 +6,7 @@
 
 class Experiment3 {
 public:
-    // 0 初始化：彩色图片,灰度图片,模板(高提升滤波的模板除外)
+    // 初始化：彩色图片,灰度图片,模板(高提升滤波的模板除外)
     Experiment3(std::vector<std::string> path){
         filter_name.push_back("均值模板平滑");
         filter_name.push_back("高斯模板平滑");
@@ -41,7 +41,7 @@ public:
         makeSobelTemplate();
         computerGaussTemplateSum();
     }
-    // 0.1、彩色图像转灰度图像
+    // 彩色图像转灰度图像
     cv::Mat color2Gray(cv::Mat src_image){
         //创建与原图同类型和同大小的矩阵
 	    cv::Mat gray_image(src_image.rows, src_image.cols, CV_8UC1);
@@ -54,11 +54,11 @@ public:
             gray_image = src_image.clone();
         return gray_image;
     }
-    // 2 生成均值模板
+    //  生成均值模板
     void makemeanTemplate(int size){
         mean_template.push_back(cv::Mat::ones(size, size, CV_8UC1));
     }
-    // 3 生成高斯模板
+    //  生成高斯模板
     void makeGaussTemplate(int size=3, int sigma=1){
         cv::Mat gaussTemplate = cv::Mat::zeros(size, size, CV_32F);
         
@@ -71,11 +71,11 @@ public:
         gaussTemplate.convertTo(gaussTemplate, CV_8U);
         gauss_template.push_back(gaussTemplate);
     }
-    // 0.3.1 计算正态分布
+    // 计算正态分布
     double g(double x, double y, double sigma=1){
         return exp(-(x*x + y*y)/(2*sigma*sigma));
     }
-    // 0.3.2 计算高斯模板的和
+    //  计算高斯模板的和
     void computerGaussTemplateSum(){
         for(int k=0; k < 3; k++){
             int sum = 0;
@@ -85,14 +85,14 @@ public:
             gauss_template_sum.push_back(sum);
         }
     }
-    // 4 生成Laplacian
+   
     //生成Laplacian
     void makeLaplacianTemplate(){
         laplacian_template = (cv::Mat_<float>(3,3) << 0,  1, 0, 
                                                       1, -4, 1, 
                                                       0,  1, 0);
     }
-    // 5 生成Robert
+    
     //生成Robert
     void makeRobertTemplate(){
         robert_template.push_back((cv::Mat_<float>(3,3) << 0,  0,  0, 
@@ -103,7 +103,7 @@ public:
                                                            0,  0,  -1, 
                                                            0,  1,   0));
     }
-    // 6 生成Sobel模板
+    // 生成Sobel模板
     //生成Sobel模板
     void makeSobelTemplate(){
         sobel_template.push_back((cv::Mat_<float>(3,3) <<  -1,   0,   1, 
@@ -114,15 +114,15 @@ public:
                                                             0,   0,   0, 
                                                             1,   2,   1));
     }
-    // 7 生成灰度图像mask
+    // 生成灰度图像mask
     void makeGrayHighPromoteMask(int id){
         highPromote_gray_mask.push_back(original_gray_image[id] - gray_image_process[id * 5]);
     }
-    // 8 生成彩色图像mask
+    // 生成彩色图像mask
     void makeColorHighPromoteMask(int id){
         highPromote_color_mask.push_back(original_color_image[id] - color_image_process[id * 5]);
     }
-    // 1、灰度空域滤波
+    // 灰度空域滤波
     void graySpatialFiltering(int pic_id, int size_id=0, int select=0){
         int size = filter_size[size_id];
         int m = size/2;
@@ -163,17 +163,16 @@ public:
         else if(select == 4)
             gray_image_grad_sobel.push_back(image_grad);
     }
-    // 2 计算均值滤波
+    // 计算均值滤波
     int computerMeanResult(cv::Mat& image_block, int size_id){
         int sum = filter_size[size_id] * filter_size[size_id];
         return image_block.dot(mean_template[size_id])/sum;
     }
-    // 3 计算高斯滤波
+    // 计算高斯滤波
     int computerGaussResult(cv::Mat& image_block, int size_id){
         int sum = gauss_template_sum[size_id];
         return image_block.dot(gauss_template[size_id])/sum;
     }
-    // 4 计算Laplacian滤波
     //计算Laplacian滤波
     int computerLaplacianResult(cv::Mat& image_block){
         float g = 0.0;
@@ -199,7 +198,7 @@ public:
             return 0;
         return g;
     }
-    // 6 计算Sobel滤波
+    //  计算Sobel滤波
     //计算Sobel滤波
     int computerSobelResult(cv::Mat& image_block){
         float Gx = 0.0;
@@ -220,11 +219,11 @@ public:
     void grayHighPromote(int id, double k = 2){
        gray_image_process.push_back(original_gray_image[id] + k * highPromote_gray_mask[id]);
     }
-    // 8 利用高提升滤波算法增彩色度图像
+    // 利用高提升滤波算法增彩色度图像
     void colorHighPromote(int id, double k = 2){
        color_image_process.push_back(original_color_image[id] + k * highPromote_color_mask[id]);
     }
-    // 9 彩色图像滤波
+    // 彩色图像滤波
     void colorSpatialFiltering(int pic_id, int size_id=0, int select=0){
         int size = filter_size[size_id];
         int m = size/2;
@@ -270,7 +269,7 @@ public:
         else if(select == 4)
             color_image_grad_sobel.push_back(image_grad);
     }
-    // 10 测试灰度均值\高斯滤波器
+    //  测试灰度均值\高斯滤波器
     void test_MeanAndGaussGrayFilter(int filter_id){
         for(int i = 0; i < original_gray_image.size(); i++)
             for(int j = 0; j < filter_size.size(); j++){
@@ -281,7 +280,7 @@ public:
         cv::imshow(filter_name[filter_id] + "----准备就绪,可以开始!", original_color_image[0]);
         cv::waitKey(0);
 
-        // 3 显示灰度滤波结果
+        //  显示灰度滤波结果
         int k = filter_id * original_gray_image.size() * filter_size.size();
         std::cout<<"gray_image_process nums: "<<gray_image_process.size()<<"\n";
         //int k = 0;
@@ -296,7 +295,7 @@ public:
         std::cout<<"\n \n";
         cv::destroyAllWindows();
     }
-    // 11 测试灰度Laplacian\Robert\Sobel滤波器
+    //  测试灰度Laplacian\Robert\Sobel滤波器
     void test_LaplacianRobertSobelGrayFilter(int filter_id){
         for(int i = 0; i < original_gray_image.size(); i++){
             graySpatialFiltering(i, 0, filter_id);
@@ -306,7 +305,7 @@ public:
         cv::imshow(filter_name[filter_id] + "----准备就绪,可以开始!", original_color_image[0]);
         cv::waitKey(0);
 
-        // 3 显示灰度滤波结果
+        //  显示灰度滤波结果
         int num_pre_pic_mean_gauss = original_gray_image.size() * filter_size.size() * 2;
         int k = num_pre_pic_mean_gauss + filter_id - 2;
         std::cout<<"gray_image_process nums: "<<gray_image_process.size()<<"\n";
@@ -327,7 +326,7 @@ public:
         std::cout<<"\n \n";
         cv::destroyAllWindows();
     }
-    // 12 测试灰度高提升滤波器
+    //  测试灰度高提升滤波器
     void test_HighPromoteGrayFilter(){
         int k = 9;
         makeGrayHighPromoteMask(0);
@@ -336,7 +335,7 @@ public:
         cv::waitKey(0);
         cv::destroyAllWindows();
     }
-    // 13 测试彩色均值\高斯滤波器
+    //  测试彩色均值\高斯滤波器
     void test_MeanAndGaussColorFilter(int filter_id){
         for(int i = 0; i < original_color_image.size(); i++)
             for(int j = 0; j < filter_size.size(); j++){
@@ -347,7 +346,7 @@ public:
         cv::imshow(filter_name[filter_id] + "----准备就绪,可以开始!", original_color_image[0]);
         cv::waitKey(0);
 
-        // 3 显示灰度滤波结果
+        //  显示灰度滤波结果
         int k = filter_id * original_color_image.size() * filter_size.size();
         std::cout<<"color_image_process nums: "<<color_image_process.size()<<"\n";
         //int k = 0;
@@ -362,7 +361,7 @@ public:
         std::cout<<"\n \n";
         cv::destroyAllWindows();
     }
-    // 14 测试彩色Laplacian\Robert\Sobel滤波器
+    //  测试彩色Laplacian\Robert\Sobel滤波器
     void test_LaplacianRobertSobelColorFilter(int filter_id){
         for(int i = 0; i < original_color_image.size(); i++){
             colorSpatialFiltering(i, 0, filter_id);
@@ -372,7 +371,7 @@ public:
         cv::imshow(filter_name[filter_id] + "----准备就绪,可以开始!", original_color_image[0]);
         cv::waitKey(0);
 
-        // 3 显示灰度滤波结果
+        //  显示灰度滤波结果
         int num_pre_pic_mean_gauss = original_color_image.size() * filter_size.size() * 2;
         int k = num_pre_pic_mean_gauss + filter_id - 2;
         std::cout<<"color_image_process nums: "<<color_image_process.size()<<"\n";
@@ -393,7 +392,7 @@ public:
         std::cout<<"\n \n";
         cv::destroyAllWindows();
     }
-    // 15 测试彩色高提升滤波器
+    //  测试彩色高提升滤波器
     void test_HighPromoteColorFilter(){
         int k = 9;
         makeColorHighPromoteMask(0);
@@ -448,17 +447,17 @@ int main(){
     Experiment3 a(path);
 
     for(int i=0; i < 2; i++)
-        a.test_MeanAndGaussGrayFilter(i);
+        a.test_MeanAndGaussGrayFilter(i);//测试均值和高斯中值滤波器
 
     for(int i=2; i < 5; i++)
-        a.test_LaplacianRobertSobelGrayFilter(i);
-    a.test_HighPromoteGrayFilter();
+        a.test_LaplacianRobertSobelGrayFilter(i);//测试LaplacianRobertSobel滤波器
+    a.test_HighPromoteGrayFilter();//测试高提升滤波器
 
     for(int i=0; i < 2; i++)
-        a.test_MeanAndGaussColorFilter(i);
+        a.test_MeanAndGaussColorFilter(i);//彩色图像
 
     for(int i=2; i < 5; i++)
-        a.test_LaplacianRobertSobelColorFilter(i);
-    a.test_HighPromoteColorFilter();
+        a.test_LaplacianRobertSobelColorFilter(i);//彩色图像
+    a.test_HighPromoteColorFilter();//彩色图像
     return 1;
 }

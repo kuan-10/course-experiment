@@ -4,10 +4,9 @@
 using namespace cv;
 class Experiment1 {
 public:
-    
     // 0、彩色图像转灰度图像
     cv::Mat color2Gray(cv::Mat src_image){
-        //创建与原图同类型和同大小的矩阵
+        //创建与原图同类型和同大小的矩�?
 	    cv::Mat gray_image=cv::Mat::zeros(src_image.rows, src_image.cols, CV_8UC1);
         if(src_image.channels()!=1){
             for(int i = 0; i < src_image.rows; i++)
@@ -19,7 +18,7 @@ public:
         return gray_image;
     }
 
-    // 1、利用 OpenCV 读取图像
+    // 1、利�? OpenCV 读取图像
     cv::Mat readImage(std::string s = "C:\\Users\\13906\\Desktop\\harden.webp"){
         cv::Mat image = cv::imread(s);
         cv::namedWindow("Display Image");
@@ -27,7 +26,6 @@ public:
         cv::waitKey(0);
         return image;
     }
-
     // 2、灰度图像二值化处理
     cv::Mat grayscaleBinarization(cv::Mat src_image, int threshold = 127){
         // 彩色图像转为灰度图像
@@ -43,7 +41,6 @@ public:
         }
         return image;
     }
-
     // 3、灰度图像的对数变换
     cv::Mat logarithmConversion(cv::Mat src_image, int c = 15){
         // 彩色图像转为灰度图像
@@ -54,7 +51,7 @@ public:
         return image;
     }
 
-    // 4、灰度图像的伽马变换（幂指数变换）
+    // 4、灰度图像的伽马变换（幂指数变换�?
     cv::Mat gammaConversion(cv::Mat src_image, int c = 1, double gamma = 2){
         // 彩色图像转为灰度图像
         cv::Mat image = color2Gray(src_image);
@@ -79,7 +76,7 @@ public:
         return image;
     }
 
-    // 6 彩色图像的补色变换
+    // 6 彩色图像的补色变�?
     cv::Mat complementConversion(cv::Mat src_image){
         cv::Mat image = src_image.clone();
         for(int i = 0; i < image.rows; i++)
@@ -90,7 +87,7 @@ public:
             }
         return image;
     }
-    // 7 找出极值
+    // 7 找出极�?
     void findmaxmin(cv::Vec3b num,cv::Vec3b& sum){
         int num1 = num[0], num2 = num[0];
         for(int i = 0; i < 3; i++){
@@ -111,13 +108,12 @@ int main(){
     cv::imshow("灰度图像", image_convert.color2Gray(image1));
     cv::waitKey(0);
 
-
     cv::Mat image2 = image_convert.grayscaleBinarization(image1);
     cv::imshow("二值化图像", image2);
     cv::waitKey(0);
 
     cv::Mat image3 = image_convert.logarithmConversion(image1);
-    cv::imshow("对数变换", image3);
+    cv::imshow("��ɫ�任", image3);
     cv::waitKey(0);
 
     cv::Mat image4 = image_convert.gammaConversion(image1);
@@ -141,7 +137,7 @@ int main(){
 // }
 //  Mat handleBinary(int gray, int max = 255,Mat img) {
 //         Mat result;
-//         //灰度处理，方式为二值化（THRESH_BINARY）
+//         //灰度处理，方式为二值化（THRESH_BINARY�?
 //         threshold(img, result, gray, max, THRESH_BINARY);
 //         return result;
 //     }
